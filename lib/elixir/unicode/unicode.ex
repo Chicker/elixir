@@ -349,6 +349,21 @@ defmodule String.Casing do
 
   # Downcase
 
+  def downcase_orig(string), do: downcase_orig(string, "")
+  
+  for {codepoint, _upper, lower, _title} <- codes, lower && lower != codepoint do
+    defp downcase_orig(unquote(codepoint) <> rest, acc) do
+      downcase_orig(rest, acc <> unquote(lower))
+    end
+  end
+  
+  defp downcase_orig(<<char, rest::binary>>, acc) do
+    downcase_orig(rest, <<acc::binary, char>>)
+  end
+  
+  defp downcase_orig("", acc), do: acc
+
+
   def downcase(string), do: downcase(string, "")
     
   defp downcase(<<char :: utf8, rest::binary>>, acc) do
@@ -362,6 +377,20 @@ defmodule String.Casing do
   defp downcase("", acc), do: acc
 
   # Upcase
+
+  def upcase_orig(string), do: upcase_orig(string, "")
+  
+  for {codepoint, upper, _lower, _title} <- codes, upper && upper != codepoint do
+    defp upcase_orig(unquote(codepoint) <> rest, acc) do
+      upcase_orig(rest, acc <> unquote(upper))
+    end
+  end
+  
+  defp upcase_orig(<<char, rest::binary>>, acc) do
+    upcase_orig(rest, <<acc::binary, char>>)
+  end
+  
+  defp upcase_orig("", acc), do: acc
 
   def upcase(string), do: upcase(string, "")
   

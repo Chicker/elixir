@@ -1,0 +1,1 @@
+String.downcase(File.read!("bench/string_bench_data.txt"))
